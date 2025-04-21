@@ -45,6 +45,13 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: 'Delete existing Azure container group (if any)'
+        run: |
+          az container delete \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --name posts \
+            --yes \
+            || echo "Container group 'posts' does not exist, skipping delete."
       - name: 'Run az commands to deploy container'
         run: |
           az container create \
@@ -58,5 +65,5 @@ jobs:
             --ports 8080 \
             --os-type Linux \
             --cpu 1 \
-            --memory 1.5
+            --memory 1.5 \
             --restart-policy Always
